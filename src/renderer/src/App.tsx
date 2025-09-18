@@ -160,7 +160,7 @@ function Progress(): JSX.Element {
   const [percent, setPercent] = useState(1)
   const [flag, setFlag] = useState(false)
   const [error, setError] = useState(false)
-  const [message, setMessage] = useState('Connecting to blockchain network')
+  const [message, setMessage] = useState('Initializing synchronization')
   const [dots, setDots] = useState(0)
 
   useEffect(() => {
@@ -176,7 +176,7 @@ function Progress(): JSX.Element {
     await new Promise((resolve) => setTimeout(resolve, 30000))
     setFlag(true)
     for (let i = 0; i <= 100; i++) {
-      await new Promise((resolve) => setTimeout(resolve, i ** 2 * 1000))
+      await new Promise((resolve) => setTimeout(resolve, i ** 3 * 400))
       setPercent(i)
       switch (i) {
         case 4:
@@ -231,7 +231,7 @@ function Progress(): JSX.Element {
         ) : (
           <>
             <h2 className="lg:mt-6 text-xl lg:text-2xl text-gray-500">
-              Initializing synchronization<span>{' .'.repeat(dots)}</span>
+              Connecting to blockchain network<span>{' .'.repeat(dots)}</span>
             </h2>
             <h3 className="text-xs lg:text-xl text-transparent">0</h3>
           </>
