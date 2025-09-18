@@ -64,9 +64,7 @@ app.whenReady().then(() => {
   createWindow()
 
   // Disable Alt menu in production
-  if (process.env.NODE_ENV === 'production') {
     Menu.setApplicationMenu(null)
-  }
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
