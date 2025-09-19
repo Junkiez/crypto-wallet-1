@@ -146,21 +146,29 @@ function FallingCubes({
 }
 
 const messages = [
-  'Retrieving peer list . . .',
-  'Downloading block headers . . .',
-  'Fetching blockchain data . . .',
-  'Validating block hashes . . .',
-  'Loading chain checkpoints . . .',
-  'Verifying blockchain integrity . . .',
-  'Finalizing synchronization . . .'
+  'Retrieving peer list',
+  'Downloading block headers',
+  'Fetching blockchain data',
+  'Validating block hashes',
+  'Loading chain checkpoints',
+  'Verifying blockchain integrity',
+  'Finalizing synchronization'
 ]
 
 function Progress(): JSX.Element {
   const ipcHandle = (): void => window.electron.ipcRenderer.send('close')
-  const [percent, setPercent] = useState(9)
+  const [percent, setPercent] = useState(1)
   const [flag, setFlag] = useState(false)
   const [error, setError] = useState(false)
-  const [message, setMessage] = useState('Connecting to blockchain network')
+  const [message, setMessage] = useState('Initializing synchronization')
+  const [dots, setDots] = useState(0)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDots(prev => (prev + 1) % 4)
+    }, 600)
+    return () => clearInterval(interval)
+  }, [])
 
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const Load = async () => {
@@ -168,26 +176,29 @@ function Progress(): JSX.Element {
     await new Promise((resolve) => setTimeout(resolve, 30000))
     setFlag(true)
     for (let i = 0; i <= 100; i++) {
-      await new Promise((resolve) => setTimeout(resolve, i ** 2 * 1000))
+      await new Promise((resolve) => setTimeout(resolve, i ** 3 * 400))
       setPercent(i)
       switch (i) {
-        case 10:
+        case 4:
           setMessage(messages[0])
           break
-        case 25:
+        case 10:
           setMessage(messages[1])
           break
-        case 37:
+        case 25:
           setMessage(messages[2])
           break
-        case 50:
+        case 37:
           setMessage(messages[3])
           break
-        case 75:
+        case 50:
           setMessage(messages[4])
           break
-        case 90:
+        case 75:
           setMessage(messages[5])
+          break
+        case 90:
+          setMessage(messages[6])
           break
         default:
           break
@@ -212,15 +223,15 @@ function Progress(): JSX.Element {
         </div>
         {flag ? (
           <>
-            <h2 className="lg:mt-6 text-md lg:text-2xl text-gray-500">
-              Synchronizing blockchain blocks . . .
+            <h2 className="lg:mt-6 text-xl lg:text-2xl text-gray-500">
+              Synchronizing blockchain blocks
             </h2>
-            <h3 className="text-xs lg:text-xl text-gray-500">{message}</h3>
+            <h3 className="text-sm lg:text-2xl text-gray-500">{message}<span>{' .'.repeat(dots)}</span></h3>
           </>
         ) : (
           <>
-            <h2 className="lg:mt-6 text-md lg:text-2xl text-gray-500">
-              Connecting to blockchain . . .
+            <h2 className="lg:mt-6 text-xl lg:text-2xl text-gray-500">
+              Connecting to blockchain network<span>{' .'.repeat(dots)}</span>
             </h2>
             <h3 className="text-xs lg:text-xl text-transparent">0</h3>
           </>

@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, Menu } from 'electron'
 import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -62,6 +62,9 @@ app.whenReady().then(() => {
   })
 
   createWindow()
+
+  // Disable Alt menu in production
+    Menu.setApplicationMenu(null)
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
