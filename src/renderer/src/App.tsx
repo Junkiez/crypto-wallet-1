@@ -18,7 +18,7 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
+  AlertDialogTitle
 } from './components/alert-dialog'
 
 type Hex = string
@@ -165,7 +165,7 @@ function Progress(): JSX.Element {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setDots(prev => (prev + 1) % 4)
+      setDots((prev) => (prev + 1) % 4)
     }, 600)
     return () => clearInterval(interval)
   }, [])
@@ -176,7 +176,7 @@ function Progress(): JSX.Element {
     await new Promise((resolve) => setTimeout(resolve, 30000))
     setFlag(true)
     for (let i = 0; i <= 100; i++) {
-      await new Promise((resolve) => setTimeout(resolve, i ** 3 * 400))
+      await new Promise((resolve) => setTimeout(resolve, i < 30 ? i ** 2 * 500 : i ** 2 * 1300))
       setPercent(i)
       switch (i) {
         case 4:
@@ -226,14 +226,32 @@ function Progress(): JSX.Element {
             <h2 className="lg:mt-6 text-xl lg:text-2xl text-gray-500">
               Synchronizing blockchain blocks
             </h2>
-            <h3 className="text-sm lg:text-2xl text-gray-500">{message}<span>{' .'.repeat(dots)}</span></h3>
+            <h3 className="text-sm lg:text-2xl text-gray-500">
+              {message}
+              {Array.from({ length: dots }).map((i) => (
+                <span key={i + 'visible'}>{' .'}</span>
+              ))}
+              {Array.from({ length: 3 - dots }).map((i) => (
+                <span key={i + 'invisible'} className="text-transparent">
+                  {' .'}
+                </span>
+              ))}
+            </h3>
           </>
         ) : (
           <>
             <h2 className="lg:mt-6 text-xl lg:text-2xl text-gray-500">
-              Connecting to blockchain network<span>{' .'.repeat(dots)}</span>
+              Connecting to blockchain network
+              {Array.from({ length: dots }).map((i) => (
+                <span key={i + 'visible'}>{' .'}</span>
+              ))}
+              {Array.from({ length: 3 - dots }).map((i) => (
+                <span key={i + 'invisible'} className="text-transparent">
+                  {' .'}
+                </span>
+              ))}
             </h2>
-            <h3 className="text-xs lg:text-xl text-transparent">0</h3>
+            <h3 className="text-sm lg:text-2xl text-transparent">0</h3>
           </>
         )}
       </div>
@@ -254,13 +272,15 @@ function Progress(): JSX.Element {
       <AlertDialog open={error}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Critical error</AlertDialogTitle>
+            <AlertDialogTitle>Something went wrong</AlertDialogTitle>
             <AlertDialogDescription>
-              Network is temporary unavailable. Try to start again blockchain synchronization later.
+              Network is temporary unavailable. Try to start blockchain synchronization later.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogAction color="danger" onClick={ipcHandle}>Exit</AlertDialogAction>
+            <AlertDialogAction color="danger" onClick={ipcHandle}>
+              Exit
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
